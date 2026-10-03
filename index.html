@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjeta de Fidelización - SmartResto</title>
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        /* Contenedor principal */
+        .loyalty-container {
+            max-width: 420px;
+            width: 100%;
+        }
+
+        /* Encabezado del restaurante */
+        .restaurant-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .restaurant-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+
+        .restaurant-header p {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Tarjeta de fidelización */
+        .loyalty-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 24px;
+            padding: 28px 24px;
+            color: #ffffff;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto de brillo sutil */
+        .loyalty-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Cabecera de la tarjeta */
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-brand-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .card-brand-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .card-wallet-label {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Nombre del cliente y progreso */
+        .card-customer {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-customer-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-customer-status {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* Sección de sellos */
+        .card-stamps-section {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-stamps-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .card-stamps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .stamp {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .stamp.filled {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .stamp.empty {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px dashed rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Premio */
+        .card-reward {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-reward-icon {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .card-reward-text {
+            flex: 1;
+        }
+
+        .card-reward-text strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .card-reward-text span {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Barra de progreso */
+        .card-progress {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 4px;
+        }
+
+        .card-progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #f97316);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+            width: 62.5%; /* 5 de 8 sellos */
+        }
+
+        .card-progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-top: 6px;
+        }
+
+        /* Botón de acción */
+        .card-action {
+            margin-top: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-action button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+        }
+
+        .card-action button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(245, 158, 11, 0.5);
+        }
+
+        .card-action button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Enlace de invitación */
+        .card-invite {
+            text-align: center;
+            margin-top: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-invite a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+            padding-bottom: 2px;
+            transition: color 0.2s;
+        }
+
+        .card-invite a:hover {
+            color: #f59e0b;
+            border-bottom-color: #f59e0b;
+        }
+
+        /* Sección de beneficios (fuera de la tarjeta) */
+        .benefits-section {
+            margin-top: 24px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .benefits-section h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .benefit-item:last-child {
+            border-bottom: none;
+        }
+
+        .benefit-icon {
+            font-size: 1.2rem;
+            width: 32px;
+            text-align: center;
+        }
+
+        .benefit-text {
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+
+        .benefit-text strong {
+            color: #1a1a2e;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .loyalty-card {
+                padding: 22px 18px;
+                border-radius: 20px;
+            }
+
+            .card-stamps-grid {
+                gap: 10px;
+            }
+
+            .stamp {
+                font-size: 0.95rem;
+            }
+
+            .card-customer-name {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loyalty-container">
+        <!-- Encabezado -->
+        <div class="restaurant-header">
+            <h1>🍣 SushiBar</h1>
+            <p>Tu tarjeta de fidelización digital</p>
+        </div>
+
+        <!-- Tarjeta de fidelización -->
+        <div class="loyalty-card">
+            <!-- Cabecera -->
+            <div class="card-top">
+                <div class="card-brand">
+                    <div class="card-brand-icon">🍣</div>
+                    <span class="card-brand-text">SushiBar</span>
+                </div>
+                <span class="card-wallet-label">📱 En tu billetera</span>
+            </div>
+
+            <!-- Cliente -->
+            <div class="card-customer">
+                <div class="card-customer-name">Martina G.</div>
+                <div class="card-customer-status">Miembro desde hace 3 meses</div>
+            </div>
+
+            <!-- Sellos -->
+            <div class="card-stamps-section">
+                <div class="card-stamps-label">
+                    <span>Tus sellos</span>
+                    <span><strong>5</strong> de 8</span>
+                </div>
+                <div class="card-stamps-grid">
+                    <div class="stamp filled">✓</div>
+                    <div class="stamp filled">✓</div>
+                    <div class="stamp filled">✓</div>
+                    <div class="stamp filled">✓</div>
+                    <div class="stamp filled">✓</div>
+                    <div class="stamp empty">6</div>
+                    <div class="stamp empty">7</div>
+                    <div class="stamp empty">8</div>
+                </div>
+            </div>
+
+            <!-- Premio -->
+            <div class="card-reward">
+                <div class="card-reward-icon">🎁</div>
+                <div class="card-reward-text">
+                    <strong>Postre de la casa, gratis</strong>
+                    <span>Te faltan 3 sellos para canjearlo</span>
+                </div>
+            </div>
+
+            <!-- Progreso -->
+            <div class="card-progress">
+                <div class="card-progress-bar">
+                    <div class="card-progress-fill"></div>
+                </div>
+                <div class="card-progress-text">
+                    <span>Progreso</span>
+                    <span>62.5%</span>
+                </div>
+            </div>
+
+            <!-- Botón de acción -->
+            <div class="card-action">
+                <button onclick="alert('¡Acercá tu celular a la pieza NFC en la mesa para sumar tu próximo sello!')">
+                    📲 Sumar sello en la mesa
+                </button>
+            </div>
+
+            <!-- Enlace de invitación -->
+            <div class="card-invite">
+                <a href="#" onclick="alert('¡Compartí tu link de invitación! Vos y tu amigo ganan un sello cada uno.'); return false;">
+                    Invitá a un amigo y ganá un sello 🎉
+                </a>
+            </div>
+        </div>
+
+        <!-- Sección de beneficios -->
+        <div class="benefits-section">
+            <h3>¿Qué incluye tu tarjeta?</h3>
+            <div class="benefit-item">
+                <span class="benefit-icon">📲</span>
+                <span class="benefit-text"><strong>Sin apps:</strong> tu tarjeta vive en Apple Wallet o Google Wallet</span>
+            </div>
+            <div class="benefit-item">
+                <span class="benefit-icon">🔔</span>
+                <span class="benefit-text"><strong>Avisos automáticos:</strong> te recordamos cuando te falta poco para tu premio</span>
+            </div>
+            <div class="benefit-item">
+                <span class="benefit-icon">🎂</span>
+                <span class="benefit-text"><strong>Saludo de cumpleaños:</strong> un detalle especial en tu día</span>
+            </div>
+            <div class="benefit-item">
+                <span class="benefit-icon">🔗</span>
+                <span class="benefit-text"><strong>Link de invitación:</strong> vos y tu amigo ganan un sello</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactividad básica: simular suma de sello al hacer clic en un sello vacío
+        document.querySelectorAll('.stamp.empty').forEach(stamp => {
+            stamp.addEventListener('click', function() {
+                if (this.classList.contains('empty')) {
+                    this.classList.remove('empty');
+                    this.classList.add('filled');
+                    this.textContent = '✓';
+                    // Actualizar contador (simulado)
+                    const filledCount = document.querySelectorAll('.stamp.filled').length;
+                    document.querySelector('.card-stamps-label span:last-child').innerHTML = `<strong>${filledCount}</strong> de 8`;
+                    
+                    // Actualizar barra de progreso
+                    const progress = (filledCount / 8) * 100;
+                    document.querySelector('.card-progress-fill').style.width = progress + '%';
+                    document.querySelector('.card-progress-text span:last-child').textContent = progress.toFixed(1) + '%';
+                    
+                    // Actualizar texto del premio
+                    const remaining = 8 - filledCount;
+                    const rewardSpan = document.querySelector('.card-reward-text span');
+                    if (remaining > 0) {
+                        rewardSpan.textContent = `Te faltan ${remaining} sellos para canjearlo`;
+                    } else {
+                        rewardSpan.textContent = '¡Tenés tu premio listo para canjear! 🎉';
+                        document.querySelector('.card-reward-text strong').textContent = '¡Premio desbloqueado!';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
